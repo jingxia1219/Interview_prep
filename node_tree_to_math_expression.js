@@ -18,6 +18,13 @@ class Node {
         this.left = null;
         this.right = null; 
     }
+    append(node) {
+        if (this.left === null) {
+            this.left = node;
+        } else {
+            this.right = node; 
+        }
+    }
 }
 
 rootNode = new Node("+");
@@ -58,14 +65,7 @@ calculate(rootNode); // => 10
 
 
 // Part 2: Instead of returning the integer value, return the expression itself as a string. "(4 + (3 * 2))"
-// Part 3: Instead of returning the string, take the string and build the tree.
 
-//         [+]
-//         / \
-//       [4] [*]
-//           / \
-//         [3]  [2]
-// 
 function nodeToString(node) {
    if ( typeof(node.val) === 'number' )  {
        return node.val;
@@ -79,8 +79,50 @@ function nodeToString(node) {
 console.log(nodeToString(rootNode));
 
 
+// Part 3: Instead of returning the string, take the string and build the tree.
 
+// given string: "(4+(3*2))"
+//         [+]
+//         / \
+//       [4] [*]
+//           / \
+//         [3]  [2]
+// 
 
+function expressionToNode(expression) {
+    const operands = ["+", "-", "*", "/"];
+    var parentNode = null; 
+    var childNode1 = null;
+    var childNode2= null; 
+    
+    for ( let i = expression.length - 1; i > 0 ; i-- ) {
+        var curr = expression[i]
+         if (curr === "(" || curr === ")"  ) {
+             continue;
+             // this will get rid of the parenthesis
+             // => "4+3*2"
+         } else if ( !operands.includes(curr) ) {
+             // if int 
+             if ( childNode1 === null) {
+              childNode1 = new Node(curr);
+              //console.log("childNode1",childNode1);
+             } else {
+                 childNode2 = new Node(curr);
+                 parentNode.append(childNode2); 
+                 //console.log("parentNode",parentNode);
+                 childNode1 = parentNode; 
+             }
+         } else {
+              parentNode = new Node(curr);
+             parentNode.append(childNode1);
+             //console.log(childNode1);
+             //console.log(parentNode);
+         }
+    }
+    return parentNode;
+}
+
+console.log(expressionToNode("(4+(3*2))"));
 
 
 
